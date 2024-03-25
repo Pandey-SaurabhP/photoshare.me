@@ -86,10 +86,6 @@ const SignUp = () => {
         }
     };
 
-    const handleLogin = () => {
-        navigate('/login');
-    };
-
     return (
         <div className='LoginSignup'>
         <Container>

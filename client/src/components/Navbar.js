@@ -23,7 +23,7 @@ const NavLink = styled.a`
   padding: 14px 20px;
   text-decoration: none;
   cursor: pointer;
-  margin-right: 10px;
+  margin-left: 10px;
 
   &:hover { 
     color: grey;
@@ -71,7 +71,7 @@ const Navbar = ({ images, setFilteredImages }) => {
     const navigate = useNavigate();
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
-    const [selectedFile, setSelectedFile] = useState(null); // Define selectedFile state
+    const [selectedFile] = useState(null); // Define selectedFile state
 
     const openModal = () => {
         setIsModalOpen(true);
