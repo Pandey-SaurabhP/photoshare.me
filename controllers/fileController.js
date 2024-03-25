@@ -1,5 +1,6 @@
 const mysql = require('mysql');
 const cloudinary = require('cloudinary').v2;
+const fs = require('fs');
 
 cloudinary.config({
     cloud_name: 'dwwguliwb',
@@ -8,10 +9,10 @@ cloudinary.config({
 });
 
 const mysqlConnection = mysql.createConnection({
-    host: 'localhost',
-    user: 'root',
-    password: 'Saurabh@04',
-    database: 'authentication'
+    host: 'b2jmm1fqtjqsdqczvoi8-mysql.services.clever-cloud.com',
+    user: 'ukptak7bxy2rt7fr',
+    password: '6dQAJPxiHUZ3yVzg7Xky',
+    database: 'b2jmm1fqtjqsdqczvoi8'
 });
 
 mysqlConnection.connect((err) => {
@@ -22,10 +23,6 @@ mysqlConnection.connect((err) => {
     }
 });
 
-// cloudinary.uploader.upload("C:\\Users\\shubh\\OneDrive\\Desktop\\MangaRead\\uploads\\1711289918119-iarcs-logo.jpg",
-//     { public_id: "localFile" },
-//     function (error, result) { console.log(result); });
-
 
 exports.uploadPhoto = (req, res) => {
     console.log('Request to upload file');
@@ -34,6 +31,9 @@ exports.uploadPhoto = (req, res) => {
         const { path: filePath } = req.file;
 
         cloudinary.uploader.upload(filePath, { folder: 'photoshare' }, async (error, result) => {
+            // Delete the file from the local directory
+            fs.unlinkSync(filePath);
+
             if (error) {
                 console.error('Error uploading photo to Cloudinary: ', error);
                 return res.status(500).json({ message: 'Server error' });
@@ -43,7 +43,7 @@ exports.uploadPhoto = (req, res) => {
             const { secure_url: imageUrl } = result;
 
             console.log(req.file.filename, imageUrl);
-            
+
             const sql = 'INSERT INTO files (filename, path) VALUES (?, ?)';
             mysqlConnection.query(sql, [req.file.filename, imageUrl], (err, result) => {
                 if (err) {
@@ -59,6 +59,8 @@ exports.uploadPhoto = (req, res) => {
         res.status(500).json({ message: 'Server error' });
     }
 };
+
+
 
 exports.getAllPhotos = (req, res) => {
     console.log('Retrieve');

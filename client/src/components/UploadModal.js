@@ -95,27 +95,27 @@ const UploadModal = ({ onClose, onUpload }) => {
             return;
         }
 
-        onUpload({ title, description, categories });
-
-        setTitle('');
-        setDescription('');
-        setCategories('');
-
-        onClose();
-
         try {
             const formData = new FormData();
             formData.append('photo', selectedFile);
-
+    
             await axios.post('http://localhost:3001/api/files/upload', formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data'
                 }
             });
+    
+            setTitle('');
+            setDescription('');
+            setCategories('');
+            setSelectedFile(null);
+    
+            onClose();
         } catch (error) {
             console.error('Error uploading photo:', error);
         }
     };
+    
 
     return (
         <ModalWrapper>

@@ -12,10 +12,8 @@ const storage = multer.diskStorage({
     }
 });
 
-// Initialize multer instance
 const upload = multer({ storage: storage });
 
-// Route handler for file upload
 router.post('/upload', upload.single('photo'), fileController.uploadPhoto);
 router.get('/retrieve', fileController.getAllPhotos);
 router.get('/test', () => {

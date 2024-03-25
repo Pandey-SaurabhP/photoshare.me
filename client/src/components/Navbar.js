@@ -28,7 +28,7 @@ const NavLink = styled.a`
   &:hover { 
     color: grey;
     background-color: white;
-    border-radius: 100px;
+    border-radius: 20px;
   }
 
   &.active {
@@ -53,9 +53,10 @@ const UserInfo = styled.div`
 const SearchInput = styled.input`
   margin-right: 20px;
   margin-left: 10px;
-  width: 60%;
+  width: 50%;
   padding: 10px;
-  border-radius: 5px;
+  padding-left: 20px;
+  border-radius: 35px;
   border: 1px solid #ccc;
   font-size: 16px;
   outline: none;
@@ -100,7 +101,6 @@ const Navbar = ({ images, setFilteredImages }) => {
             }
         };
 
-        // Filter images based on search query
         const filteredImages = images.filter((image) =>
             image.path.toLowerCase().includes(searchQuery.toLowerCase())
         );
@@ -142,7 +142,7 @@ const Navbar = ({ images, setFilteredImages }) => {
                 <div>
                     {userInfo && (
                         <>
-                            <NavLink onClick={openModal}>+</NavLink>
+                            <NavLink onClick={openModal}>Upload</NavLink>
                             {isModalOpen && (
                                 <UploadModal onClose={closeModal} onUpload={handleUpload} />
                             )}

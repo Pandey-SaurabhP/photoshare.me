@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import './style.css';
+import axios from 'axios';
 
 const Container = styled.div`
   position: absolute;
@@ -80,42 +81,49 @@ const SignUp = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            // Your signup logic here
+            const response = await axios.post('http://localhost:3001/api/users/signup', {
+                username,
+                email,
+                password
+            });
+            console.log(response.data); // Handle response as needed
+            // Redirect or perform other actions upon successful signup
         } catch (error) {
-            console.error(error);
+            console.error('Error signing up:', error);
+            // Handle errors, e.g., show error message to user
         }
     };
 
     return (
         <div className='LoginSignup'>
-        <Container>
-            <Title>Sign Up</Title>
-            <Form onSubmit={handleSubmit}>
-                <Input
-                    type="text"
-                    placeholder="Username"
-                    value={username}
-                    onChange={(e) => setUsername(e.target.value)}
-                    required
-                />
-                <Input
-                    type="email"
-                    placeholder="Email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    required
-                />
-                <Input
-                    type="password"
-                    placeholder="Password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    required
-                />
-                <Button type="submit" value="Sign Up" />
-            </Form>
-            <Login onClick={() => navigate('/login')}>Already have an account? Login</Login>
-        </Container>
+            <Container>
+                <Title>Sign Up</Title>
+                <Form onSubmit={handleSubmit}>
+                    <Input
+                        type="text"
+                        placeholder="Username"
+                        value={username}
+                        onChange={(e) => setUsername(e.target.value)}
+                        required
+                    />
+                    <Input
+                        type="email"
+                        placeholder="Email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        required
+                    />
+                    <Input
+                        type="password"
+                        placeholder="Password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        required
+                    />
+                    <Button type="submit" value="Sign Up" />
+                </Form>
+                <Login onClick={() => navigate('/login')}>Already have an account? Login</Login>
+            </Container>
         </div>
     );
 };
