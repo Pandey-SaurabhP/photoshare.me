@@ -99,7 +99,7 @@ const UploadModal = ({ onClose, onUpload }) => {
             const formData = new FormData();
             formData.append('photo', selectedFile);
     
-            await axios.post('http://localhost:3001/api/files/upload', formData, {
+            await axios.post('https://photoshare-me.onrender.com/api/files/upload', formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data'
                 }

@@ -11,7 +11,7 @@ const UserInfoPage = () => {
 
             if (token) {
                 try {
-                    const response = await axios.post('http://localhost:3001/api/users/info', {
+                    const response = await axios.post('https://photoshare-me.onrender.com/api/users/info', {
                         headers: {
                             'Authorization': `Bearer ${token}`,
                             'Content-Type': 'application/json'

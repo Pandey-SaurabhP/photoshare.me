@@ -79,7 +79,7 @@ const Login = () => {
     const handleLoginSubmit = async (e) => {
         e.preventDefault();
         try {
-            const response = await axios.post('http://localhost:3001/api/users/login', { email, password });
+            const response = await axios.post('https://photoshare-me.onrender.com/api/users/login', { email, password });
             const { token } = response.data;
             localStorage.setItem('token', token);
             navigate('/dashboard');

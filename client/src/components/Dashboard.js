@@ -44,7 +44,7 @@ function Dashboard() {
 
     const fetchPhotos = async () => {
         try {
-            const response = await axios.get('http://localhost:3001/api/files/retrieve');
+            const response = await axios.get('https://photoshare-me.onrender.com/api/files/retrieve');
             setImages(response.data);
             setFilteredImages(response.data); // Initially set filtered images to all images
         } catch (error) {

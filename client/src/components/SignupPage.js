@@ -81,7 +81,7 @@ const SignUp = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const response = await axios.post('http://localhost:3001/api/users/signup', {
+            const response = await axios.post('https://photoshare-me.onrender.com/api/users/signup', {
                 username,
                 email,
                 password
