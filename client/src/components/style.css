@@ -1,0 +1,14 @@
+.LoginSignup {
+    height: 100vh; /* Make sure the body covers the entire viewport height */
+    background: url('../assets/back.jpg') center/cover; /* Apply background image */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0;
+    padding: 0px;
+  }
+
+  body{
+    margin: 0;
+  padding: 0;
+  }
