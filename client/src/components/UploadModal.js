@@ -30,7 +30,6 @@ const NavLink = styled.a`
     display: block;
     text-align: left;
   }
-  
 `;
 
 const ModalWrapper = styled.div`
@@ -122,7 +121,6 @@ const UploadModal = ({ onClose, onUpload }) => {
         <ModalWrapper>
             <ModalContent>
 
-                <h2>Upload Image</h2>
                 <CloseButton onClick={onClose}>Close</CloseButton>
                 <Input
                     type="text"

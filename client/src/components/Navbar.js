@@ -23,7 +23,7 @@ const NavLink = styled.a`
   padding: 14px 20px;
   text-decoration: none;
   cursor: pointer;
-  margin-left: 10px;
+  margin-right: 12px;
 
   &:hover { 
     color: grey;
@@ -137,7 +137,6 @@ const Navbar = ({ images, setFilteredImages }) => {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
             />
-
 
             <UserInfo>
                 <div>

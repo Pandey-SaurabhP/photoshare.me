@@ -2,7 +2,13 @@
 const mysql = require('mysql');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
-const crypto = require('crypto');
+const cloudinary = require('cloudinary').v2;
+
+cloudinary.config({
+    cloud_name: 'dwwguliwb',
+    api_key: '268279275622213',
+    api_secret: 'KWp4uQFekX-dzi_yfBrmoaPiF8Q'
+});
 
 const secretKey = 'xyz';
 
@@ -13,6 +19,8 @@ const connection = mysql.createConnection({
     database: 'authentication'
 });
 
+
+
 connection.connect();
 
 const generateToken = (user) => {
@@ -20,9 +28,7 @@ const generateToken = (user) => {
 };
 
 exports.getUserInfo = (req, res) => {
-    console.log('Recived request', req.body);
     const token = req.body.headers.Authorization.split(' ')[1];
-    console.log(token);
 
     jwt.verify(token, secretKey, (err, decoded) => {
         if (err) {
@@ -66,7 +72,6 @@ exports.signup = (req, res) => {
 
 exports.login = (req, res) => {
     const { email, password } = req.body;
-    console.log(req.body);
     connection.query('SELECT * FROM users WHERE email = ?', [email], async (error, results) => {
         if (error) {
             console.error(error);

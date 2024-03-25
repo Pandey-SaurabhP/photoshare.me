@@ -64,7 +64,7 @@ function Dashboard() {
                         {filteredImages.map((image, i) => (
                             <MasonryImg
                                 key={i}
-                                src={`http://localhost:3001/${image.path}`}
+                                src={`${image.path}`}
                                 style={{ width: "100%", display: "block" }}
                             />
                         ))}

@@ -1,4 +1,11 @@
 const mysql = require('mysql');
+const cloudinary = require('cloudinary').v2;
+
+cloudinary.config({
+    cloud_name: 'dwwguliwb',
+    api_key: '268279275622213',
+    api_secret: 'KWp4uQFekX-dzi_yfBrmoaPiF8Q'
+});
 
 const mysqlConnection = mysql.createConnection({
     host: 'localhost',
@@ -15,24 +22,37 @@ mysqlConnection.connect((err) => {
     }
 });
 
+// cloudinary.uploader.upload("C:\\Users\\shubh\\OneDrive\\Desktop\\MangaRead\\uploads\\1711289918119-iarcs-logo.jpg",
+//     { public_id: "localFile" },
+//     function (error, result) { console.log(result); });
+
 
 exports.uploadPhoto = (req, res) => {
     console.log('Request to upload file');
-    console.log(req); // Access uploaded file using req.file, not req.body.file
 
     try {
-        const { filename, path } = req.file;
+        const { path: filePath } = req.file;
 
-        const sql = 'INSERT INTO files (filename, path) VALUES (?, ?)'; // Assuming no username is needed
-
-        mysqlConnection.query(sql, [filename, path], (err, result) => {
-            if (err) {
-                console.error('Error uploading photo to MySQL: ', err);
-                res.status(500).json({ message: 'Server error' });
-            } else {
-                console.log('Photo uploaded to MySQL');
-                res.status(201).json({ message: 'Photo uploaded successfully' });
+        cloudinary.uploader.upload(filePath, { folder: 'photoshare' }, async (error, result) => {
+            if (error) {
+                console.error('Error uploading photo to Cloudinary: ', error);
+                return res.status(500).json({ message: 'Server error' });
             }
+
+            console.log('Photo uploaded to Cloudinary');
+            const { secure_url: imageUrl } = result;
+
+            console.log(req.file.filename, imageUrl);
+            
+            const sql = 'INSERT INTO files (filename, path) VALUES (?, ?)';
+            mysqlConnection.query(sql, [req.file.filename, imageUrl], (err, result) => {
+                if (err) {
+                    console.error('Error saving photo URL to MySQL: ', err);
+                    return res.status(500).json({ message: 'Server error' });
+                }
+                console.log('Photo URL saved to MySQL');
+                res.status(201).json({ message: 'Photo uploaded successfully' });
+            });
         });
     } catch (error) {
         console.error(error);
