@@ -15,6 +15,13 @@ const mysqlConnection = mysql.createConnection({
     database: 'b2jmm1fqtjqsdqczvoi8'
 });
 
+// const mysqlConnection = mysql.createConnection({
+//     host: 'localhost',
+//     user: 'root',
+//     password: 'Saurabh@04',
+//     database: 'authentication'
+// });
+
 mysqlConnection.connect((err) => {
     if (err) {
         console.error('Error connecting to MySQL database: ', err);
@@ -32,7 +39,6 @@ exports.uploadPhoto = (req, res) => {
 
         cloudinary.uploader.upload(filePath, { folder: 'photoshare' }, async (error, result) => {
             // Delete the file from the local directory
-            fs.unlinkSync(filePath);
 
             if (error) {
                 console.error('Error uploading photo to Cloudinary: ', error);

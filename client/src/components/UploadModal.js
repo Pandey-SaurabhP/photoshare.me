@@ -46,19 +46,26 @@ const ModalWrapper = styled.div`
 `;
 
 const ModalContent = styled.div`
-width: 30%;
+  position: relative; /* Changed from fixed to relative */
+  width: 30%;
   background-color: white;
   padding: 20px;
   border-radius: 8px;
 `;
 
 const CloseButton = styled.button`
-  position: absolute;
-  top: 10px;
-  right: 10px;
+  margin-left: 95%;
+  margin-bottom: 10px;
+  font-size: 20px;
   background: none;
   border: none;
   cursor: pointer;
+  z-index: 999;
+`;
+
+const UploadedImage = styled.img`
+  width: 100%;
+  margin-bottom: 10px;
 `;
 
 const Input = styled.input`
@@ -84,6 +91,7 @@ const UploadModal = ({ onClose, onUpload }) => {
     const [selectedFile, setSelectedFile] = useState(null);
     const [description, setDescription] = useState('');
     const [categories, setCategories] = useState('');
+    const [uploadedImageUrl, setUploadedImageUrl] = useState(null); // State to store uploaded image URL
 
     const handleFileChange = (event) => {
         setSelectedFile(event.target.files[0]);
@@ -98,12 +106,17 @@ const UploadModal = ({ onClose, onUpload }) => {
         try {
             const formData = new FormData();
             formData.append('photo', selectedFile);
-    
-            await axios.post('https://photoshare-me.onrender.com/api/files/upload', formData, {
+            
+            // https://photoshare-me.onrender.com
+            const response = await axios.post('https://photoshare-me.onrender.com/api/files/upload', formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data'
                 }
             });
+
+            // Extract image URL from the response
+            const imageUrl = response.data.imageUrl;
+            setUploadedImageUrl(imageUrl); // Set the uploaded image URL
     
             setTitle('');
             setDescription('');
@@ -121,7 +134,11 @@ const UploadModal = ({ onClose, onUpload }) => {
         <ModalWrapper>
             <ModalContent>
 
-                <CloseButton onClick={onClose}>Close</CloseButton>
+                <CloseButton onClick={onClose}>X</CloseButton>
+
+                {/* Display uploaded image if available */}
+                {uploadedImageUrl && <UploadedImage src={uploadedImageUrl} alt="Uploaded Image" />}
+
                 <Input
                     type="text"
                     placeholder="Title"

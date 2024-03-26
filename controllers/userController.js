@@ -19,7 +19,12 @@ const connection = mysql.createConnection({
     database: 'b2jmm1fqtjqsdqczvoi8'
 });
 
-
+// const connection = mysql.createConnection({
+//     host: 'localhost',
+//     user: 'root',
+//     password: 'Saurabh@04',
+//     database: 'authentication'
+// });
 
 connection.connect();
 

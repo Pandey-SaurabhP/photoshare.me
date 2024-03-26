@@ -1,6 +1,6 @@
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import axios from 'axios';
-import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import UploadModal from './UploadModal';
 
@@ -24,6 +24,7 @@ const NavLink = styled.a`
   text-decoration: none;
   cursor: pointer;
   margin-right: 12px;
+  margin-left: 10px;
 
   &:hover { 
     color: grey;
@@ -127,7 +128,12 @@ const Navbar = ({ images, setFilteredImages }) => {
 
     const handleLogin = () => {
         navigate('/login');
-    }
+    };
+
+    const handleLogout = () => {
+        localStorage.removeItem('token');
+        setUserInfo(null);
+    };
 
     return (
         <Nav>
@@ -151,9 +157,10 @@ const Navbar = ({ images, setFilteredImages }) => {
 
                 </div>
                 {userInfo ? (
-                    <div>
+                    <>
                         <p>Welcome, {userInfo.username}</p>
-                    </div>
+                        <NavLink onClick={handleLogout}>Logout</NavLink>
+                    </>
                 ) : (
                     <NavLink onClick={handleLogin}>Login</NavLink>
                 )}

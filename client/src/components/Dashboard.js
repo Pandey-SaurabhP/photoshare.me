@@ -18,8 +18,7 @@ const MainContainer = styled.div`
     margin-top: 10px;
     display: flex;
     flex-wrap: wrap;
-    justify-content: space-around; /* Adjust this as needed */
-    gap: 10px;
+    justify-content: space-around;
 `;
 
 const MasonryImg = styled.img`

@@ -12,13 +12,13 @@ const Sidebar = styled.div`
 `;
 
 const CategoryList = styled.ul`
-margin-top: 25px;
+  margin-top: 25px;
   list-style-type: none;
   padding: 0;
 `;
 
 const CategoryItem = styled.li`
-  padding: 8px 16px;
+  padding: 8px;
   cursor: pointer;
   background-color: ${({ selected }) => (selected ? '#ddd' : 'transparent')};
 
