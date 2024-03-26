@@ -36,9 +36,9 @@ exports.uploadPhoto = (req, res) => {
 
     try {
         const { path: filePath } = req.file;
+        const { username, title, description, categories } = req.body;
 
         cloudinary.uploader.upload(filePath, { folder: 'photoshare' }, async (error, result) => {
-            // Delete the file from the local directory
 
             if (error) {
                 console.error('Error uploading photo to Cloudinary: ', error);
@@ -50,8 +50,8 @@ exports.uploadPhoto = (req, res) => {
 
             console.log(req.file.filename, imageUrl);
 
-            const sql = 'INSERT INTO files (filename, path) VALUES (?, ?)';
-            mysqlConnection.query(sql, [req.file.filename, imageUrl], (err, result) => {
+            const sql = 'INSERT INTO files (username, filename, path, title, description, tags) VALUES (?, ?, ?, ?, ?, ?)';
+            mysqlConnection.query(sql, [username, req.file.filename, imageUrl, title, description, categories], (err, result) => {
                 if (err) {
                     console.error('Error saving photo URL to MySQL: ', err);
                     return res.status(500).json({ message: 'Server error' });
@@ -66,11 +66,49 @@ exports.uploadPhoto = (req, res) => {
     }
 };
 
+exports.fetchComments = (req, res) => {
+    console.log('Comment retrieval request');
+    const {filename}= req.body;
+    const qry = 'Select * from comments where filename = ?';
 
+    mysqlConnection.query(qry, [filename], (err, rows) => {
+        if (err) {
+            console.error('Error fetching comments', err);
+            res.status(500).json({ message: 'Server Error' });
+        }
+        else {
+            res.json(rows);
+        }
+    })
+}
+
+exports.addComment = (req, res) => {
+    console.log('Request to add comment');
+    console.log(req.body);
+
+    try {
+        const { email, filename, text } = req.body;
+        const sql = 'INSERT INTO comments (email, filename, text, time) VALUES (?, ?, ?, CURRENT_TIMESTAMP)';
+        mysqlConnection.query(sql, [email, filename, text], (err, result) => {
+            if (err) {
+                console.error('Error saving comment to MySQL: ', err);
+                return res.status(500).json({ message: 'Server error' });
+            }
+
+            console.log('Comment Saved to MySQL');
+            res.status(201).json({ message: 'Comment uploaded successfully' });
+        });
+    }
+    catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Server error' });
+    }
+}
 
 exports.getAllPhotos = (req, res) => {
-    console.log('Retrieve');
+    console.log('Retrieval Request');
     const sql = 'SELECT * FROM files';
+
     mysqlConnection.query(sql, (err, rows) => {
         if (err) {
             console.error('Error fetching photos from MySQL: ', err);

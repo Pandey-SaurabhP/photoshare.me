@@ -8,6 +8,9 @@
     padding: 0px;
   }
 
+  p{
+    color: grey;
+  }
   body{
     margin: 0;
   padding: 0;

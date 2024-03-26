@@ -16,8 +16,12 @@ const upload = multer({ storage: storage });
 
 router.post('/upload', upload.single('photo'), fileController.uploadPhoto);
 router.get('/retrieve', fileController.getAllPhotos);
-router.get('/test', () => {
-    console.log('Hello from Express!');
-});
+
+// router.get('/test', () => {
+//     console.log('Hello from Express!');
+// });
+
+router.post('/add_comment', fileController.addComment);
+router.post('/retrieve_comment', fileController.fetchComments);
 
 module.exports = router;

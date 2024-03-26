@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import Navbar from './Navbar';
 import SidebarComponent from './Sidebar';
 import Masonry from 'react-responsive-masonry';
+import PhotoModal from './PhotoModal'; // Import the PhotoModal component
 
 const Container = styled.div`
     display: flex;
@@ -12,18 +13,25 @@ const Container = styled.div`
 
 const PhotosContainer = styled.div`
     width: 100%;
+    
 `;
 
 const MainContainer = styled.div`
-    margin-top: 10px;
+    margin-top: 20px;
     display: flex;
     flex-wrap: wrap;
     justify-content: space-around;
+    
 `;
 
 const MasonryImg = styled.img`
     border-radius: 15px;
-    border : 2px solid black;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+
+    &:hover { 
+        transform: scale(1.02);
+    }
 `;
 
 const SidebarWrapper = styled.div`
@@ -33,19 +41,37 @@ const SidebarWrapper = styled.div`
     overflow-y: auto;
 `;
 
+const Username = styled.p`
+    margin-top: 5px;
+    margin-left: 5%;
+    font-size: 15px;
+`;
+
 function Dashboard() {
     const [images, setImages] = useState([]);
     const [filteredImages, setFilteredImages] = useState([]);
+    const [selectedImage, setSelectedImage] = useState(null); // State to track the selected image
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
     useEffect(() => {
         fetchPhotos();
     }, []);
 
+    const handleImageClick = (image) => {
+        console.log(image);
+        setSelectedImage(image);
+        setIsModalOpen(true);
+    };
+
+    const handleCloseModal = () => {
+        setIsModalOpen(false); // Close the modal
+    };
+
     const fetchPhotos = async () => {
         try {
             const response = await axios.get('https://photoshare-me.onrender.com/api/files/retrieve');
             setImages(response.data);
-            setFilteredImages(response.data); // Initially set filtered images to all images
+            setFilteredImages(response.data);
         } catch (error) {
             console.error('Error fetching photos:', error);
         }
@@ -61,15 +87,29 @@ function Dashboard() {
                 <MainContainer>
                     <Masonry columnsCount={5} gutter="10px">
                         {filteredImages.map((image, i) => (
-                            <MasonryImg
-                                key={i}
-                                src={`${image.path}`}
-                                style={{ width: "100%", display: "block" }}
-                            />
+                            <div key={i} onClick={() => handleImageClick(image)}>
+                                <MasonryImg
+                                    src={`${image.path}`}
+                                    style={{ width: "100%", display: "block" }}
+                                />
+                                <Username>By {(image.username)? (image.username): "Undefined"}</Username>
+                            </div>
                         ))}
                     </Masonry>
                 </MainContainer>
             </PhotosContainer>
+
+            {isModalOpen && selectedImage && (
+                <PhotoModal
+                    username={(selectedImage.username)? (selectedImage.username): "Undefined"}
+                    imageUrl={selectedImage.path}
+                    title={(selectedImage.title)? (selectedImage.title): "Undefined"}
+                    description={(selectedImage.description)? (selectedImage.description): "Undefined"}
+                    tags={(selectedImage.tags)? (selectedImage.tags): "Undefined"}
+                    onClose={handleCloseModal}
+                />
+            )}
+
         </Container>
     );
 }
