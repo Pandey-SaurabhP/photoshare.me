@@ -24,7 +24,7 @@ const Title = styled.header`
 `;
 
 const Form = styled.form`
-  padding-top: 2rem;
+  padding-top: 15px;
   padding-left: 2rem;
   padding-right: 2rem;
   padding-bottom: 1rem;
@@ -71,6 +71,12 @@ const SignUp = styled.span`
   }
 `;
 
+const Note = styled.p`
+  margin : 1px;
+  text-align: center;
+  font-size: 14px;
+`
+
 const Login = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -92,6 +98,10 @@ const Login = () => {
         <div className='LoginSignup'>
             <Container>
                 <Title>Login</Title>
+
+                <Note>Since, the application is hosted on a free server</Note>
+                <Note>It may take 10-50 seconds to start the server. Please wait</Note>
+
                 <Form onSubmit={handleLoginSubmit}>
                     <Input
                         type="email"

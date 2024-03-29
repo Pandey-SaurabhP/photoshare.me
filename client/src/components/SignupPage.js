@@ -72,6 +72,12 @@ const Login = styled.label`
   }
 `;
 
+const Note = styled.p`
+  margin : 1px;
+  text-align: center;
+  font-size: 14px;
+`
+
 const SignUp = () => {
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
@@ -86,11 +92,10 @@ const SignUp = () => {
                 email,
                 password
             });
-            console.log(response.data); // Handle response as needed
-            // Redirect or perform other actions upon successful signup
+            console.log('SignUp Successful'); // Handle response as needed
+            navigate('/login');
         } catch (error) {
             console.error('Error signing up:', error);
-            // Handle errors, e.g., show error message to user
         }
     };
 
@@ -98,6 +103,10 @@ const SignUp = () => {
         <div className='LoginSignup'>
             <Container>
                 <Title>Sign Up</Title>
+                
+                <Note>Since, the application is hosted on a free server</Note>
+                <Note>It may take 10-50 seconds to start the server. Please wait</Note>
+
                 <Form onSubmit={handleSubmit}>
                     <Input
                         type="text"

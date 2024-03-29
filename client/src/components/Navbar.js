@@ -148,7 +148,7 @@ const Navbar = ({ images, setFilteredImages }) => {
                 <div>
                     {userInfo && (
                         <>
-                            <NavLink onClick={openModal}>Upload</NavLink>
+                            <NavLink onClick={openModal}>+</NavLink>
                             {isModalOpen && (
                                 <UploadModal onClose={closeModal} onUpload={handleUpload} />
                             )}

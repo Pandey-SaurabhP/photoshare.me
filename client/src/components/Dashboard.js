@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import Navbar from './Navbar';
 import SidebarComponent from './Sidebar';
 import Masonry from 'react-responsive-masonry';
-import PhotoModal from './PhotoModal'; // Import the PhotoModal component
+import PhotoModal from './PhotoModal';
 
 const Container = styled.div`
     display: flex;
@@ -13,15 +13,14 @@ const Container = styled.div`
 
 const PhotosContainer = styled.div`
     width: 100%;
-    
 `;
 
 const MainContainer = styled.div`
     margin-top: 20px;
+    margin-left: 10px;
     display: flex;
     flex-wrap: wrap;
     justify-content: space-around;
-    
 `;
 
 const MasonryImg = styled.img`
@@ -34,37 +33,69 @@ const MasonryImg = styled.img`
     }
 `;
 
-const SidebarWrapper = styled.div`
-    position: sticky;
-    top: 0;
-    height: 100vh;
-    overflow-y: auto;
-`;
-
 const Username = styled.p`
     margin-top: 5px;
     margin-left: 5%;
     font-size: 15px;
 `;
 
+const Note = styled.p`
+  margin : 1px;
+  text-align: center;
+  font-size: 14px;
+`
+
 function Dashboard() {
     const [images, setImages] = useState([]);
     const [filteredImages, setFilteredImages] = useState([]);
-    const [selectedImage, setSelectedImage] = useState(null); // State to track the selected image
+    const [selectedImage, setSelectedImage] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+    const [columnsCount, setColumnsCount] = useState(5);
+
+    useEffect(() => {
+        const handleResize = () => {
+            setWindowWidth(window.innerWidth);
+        };
+
+        window.addEventListener('resize', handleResize);
+
+        return () => {
+            window.removeEventListener('resize', handleResize);
+        };
+    }, []);
+
+    useEffect(() => {
+        const calculateColumnsCount = () => {
+            if (windowWidth >= 1200) {
+                setColumnsCount(5);
+            } else if (windowWidth >= 992) {
+                setColumnsCount(4);
+            } else if (windowWidth >= 768) {
+                setColumnsCount(3);
+            } else {
+                setColumnsCount(2);
+            }
+        };
+
+        calculateColumnsCount();
+
+        return () => {
+            window.removeEventListener('resize', calculateColumnsCount);
+        };
+    }, [windowWidth]);
 
     useEffect(() => {
         fetchPhotos();
     }, []);
 
     const handleImageClick = (image) => {
-        console.log(image);
         setSelectedImage(image);
         setIsModalOpen(true);
     };
 
     const handleCloseModal = () => {
-        setIsModalOpen(false); // Close the modal
+        setIsModalOpen(false);
     };
 
     const fetchPhotos = async () => {
@@ -78,39 +109,46 @@ function Dashboard() {
     };
 
     return (
-        <Container>
-            <SidebarWrapper>
+        <>
+            <Container>
+                {/* <SidebarWrapper>
                 <SidebarComponent />
-            </SidebarWrapper>
-            <PhotosContainer>
-                <Navbar images={images} setFilteredImages={setFilteredImages} />
-                <MainContainer>
-                    <Masonry columnsCount={5} gutter="10px">
-                        {filteredImages.map((image, i) => (
-                            <div key={i} onClick={() => handleImageClick(image)}>
-                                <MasonryImg
-                                    src={`${image.path}`}
-                                    style={{ width: "100%", display: "block" }}
-                                />
-                                <Username>By {(image.username)? (image.username): "Undefined"}</Username>
-                            </div>
-                        ))}
-                    </Masonry>
-                </MainContainer>
-            </PhotosContainer>
+            </SidebarWrapper> */}
+                <PhotosContainer>
+                    <Navbar images={images} setFilteredImages={setFilteredImages} />
+                    <MainContainer>
+                        <Masonry columnsCount={columnsCount} gutter="10px">
+                            {filteredImages.map((image, i) => (
+                                <div key={i} onClick={() => handleImageClick(image)}>
+                                    <MasonryImg
+                                        src={`${image.path}`}
+                                        style={{ width: "100%", display: "block" }}
+                                    />
+                                    <Username>By {image.username ? image.username : "Undefined"}</Username>
+                                </div>
+                            ))}
+                        </Masonry>
+                    </MainContainer>
+                </PhotosContainer>
 
-            {isModalOpen && selectedImage && (
-                <PhotoModal
-                    username={(selectedImage.username)? (selectedImage.username): "Undefined"}
-                    imageUrl={selectedImage.path}
-                    title={(selectedImage.title)? (selectedImage.title): "Undefined"}
-                    description={(selectedImage.description)? (selectedImage.description): "Undefined"}
-                    tags={(selectedImage.tags)? (selectedImage.tags): "Undefined"}
-                    onClose={handleCloseModal}
-                />
-            )}
+                {isModalOpen && selectedImage && (
+                    <PhotoModal
+                        username={(selectedImage.username) ? (selectedImage.username) : "Undefined"}
+                        imageUrl={selectedImage.path}
+                        title={(selectedImage.title) ? (selectedImage.title) : "Undefined"}
+                        description={(selectedImage.description) ? (selectedImage.description) : "Undefined"}
+                        tags={(selectedImage.tags) ? (selectedImage.tags) : "Undefined"}
+                        onClose={handleCloseModal}
+                    />
+                )}
 
-        </Container>
+            </Container>
+
+
+            <Note>Since, the application is hosted on a free server</Note>
+            <Note>It may take 10-50 seconds to start the server. Please wait</Note>
+
+        </>
     );
 }
 

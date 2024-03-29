@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import styled from 'styled-components';
 import axios from 'axios';
+import { format } from 'date-fns';
 
 const ModalWrapper = styled.div`
     position: fixed;
@@ -16,7 +17,7 @@ const ModalWrapper = styled.div`
 
 const ModalContent = styled.div`
     background-color: #fff;
-    width: 55%;
+    width: 50%;
     height: 70%;
     padding: 20px;
     display: flex;
@@ -24,6 +25,7 @@ const ModalContent = styled.div`
 
 const ImageContainer = styled.div`
     flex: 1;
+    margin-right: 0px;  
     display: flex;
     justify-content: center;
     align-items: center;
@@ -37,7 +39,9 @@ const Image = styled.img`
 
 const DetailsContainer = styled.div`
     flex: 1;
-    padding: 20px;
+    padding-top: 10px;
+    padding-right: 10px;
+    width: 100%;
     overflow-y: auto;
 `;
 
@@ -76,16 +80,18 @@ const CloseButton = styled.button`
 
 const CommentInput = styled.input`
     width: 100%;
-    height: 100%;
+    height: 40px;
     border: 1px solid #ccc;
     border-radius: 4px;
     box-sizing: border-box;
-    margin-right: 12px;
+    margin-right: 10px;
+    margin-left: 0px;
     padding-left: 10px;
 `;
 
 const SubmitButton = styled.button`
     width: 100px;
+    height: 40px;
     padding: 10px;
     background-color: #009579;
     color: white;
@@ -95,24 +101,40 @@ const SubmitButton = styled.button`
 `;
 
 const CommentContainer = styled.div`
-    height: 40px;
     display: flex;
     justify-content: space-between;
     margin-top: 10px;
-`
-
-const Comment = styled.div`
-    font-size: 15px;
-    color: black;
-`
-
-const Commented = styled.div`
-    margin-top: 10px;
-`
+    margin-left: 10px;
+`;
 
 const CommentBox = styled.div`
     margin-top: 10px;
-`
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 10px;
+    background-color: #f9f9f9;
+`;
+
+const CommentText = styled.p`
+    font-size: 15px;
+    color: black;
+    margin-bottom: 5px;
+`;
+
+const CommentDetails = styled.div`
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 12px;
+    color: #666;
+`;
+
+const Container1 = styled.div`
+    display: grid;
+    width: 40%;
+    margin-left: 10px;
+    padding-left: 0px;
+`;
 
 const PhotoModal = ({ username, imageUrl, title, description, tags, onClose }) => {
 
@@ -192,14 +214,31 @@ const PhotoModal = ({ username, imageUrl, title, description, tags, onClose }) =
                 <ImageContainer>
                     <Image src={imageUrl} alt="Photo" />
                 </ImageContainer>
-                <DetailsContainer>
-                    <CloseButton onClick={onClose}>X</CloseButton>
 
-                    <Title>Title : {title}</Title>
-                    <Tags> Uploaded by : {username} </Tags>
+                <Container1>
+                    <DetailsContainer>
+                        <CloseButton onClick={onClose}>X</CloseButton>
 
-                    <Description> Description : {description}</Description>
-                    <Tags> Tags : {tags} </Tags>
+                        <Title>Title : {title}</Title>
+                        <Tags> Uploaded by : {username} </Tags>
+
+                        <Description> Description : {description}</Description>
+                        <Tags> Tags : {tags} </Tags>
+
+                        <CommentBox>
+                            {allComments.map((comment, index) => (
+                                <div key={index}>
+                                    <CommentText>{comment.text}</CommentText>
+                                    <CommentDetails>
+                                        <span>{comment.email}</span>
+                                        <span>{format(new Date(comment.time), 'dd/MM/yyyy HH:mm:ss')}</span>
+                                    </CommentDetails>
+                                </div>
+                            ))}
+                        </CommentBox>
+
+
+                    </DetailsContainer>
 
                     <CommentContainer>
                         {userInfo ? (
@@ -216,20 +255,7 @@ const PhotoModal = ({ username, imageUrl, title, description, tags, onClose }) =
                             <p>Please log in to comment.</p>
                         )}
                     </CommentContainer>
-
-
-                    <Commented>
-                        {allComments.map((comment, index) => (
-                            <CommentBox key={index}>
-                                <Comment>{comment.text}</Comment>
-                                <Comment>{comment.email}</Comment>
-                                <Comment>{comment.time}</Comment>
-                            </CommentBox>
-                        ))}
-                    </Commented>
-                </DetailsContainer>
-
-
+                </Container1>
             </ModalContent>
         </ModalWrapper>
     );
