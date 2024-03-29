@@ -93,6 +93,7 @@ const SignUp = () => {
                 password
             });
             console.log('SignUp Successful'); // Handle response as needed
+            console.log(response);
             navigate('/login');
         } catch (error) {
             console.error('Error signing up:', error);
