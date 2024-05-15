@@ -5,9 +5,9 @@ import styled from 'styled-components';
 
 
 const Container = styled.div`
-background: white;
-margin: 0;
-padding: 0;
+  background: white;
+  margin: 0;
+  padding: 0;
   position: absolute;
   max-width: 430px;
   width: 100%;
@@ -88,7 +88,7 @@ const Login = () => {
             const response = await axios.post('https://photoshare-me.onrender.com/api/users/login', { email, password });
             const { token } = response.data;
             localStorage.setItem('token', token);
-            navigate('/dashboard');
+            navigate('/');
         } catch (error) {
             console.error('Login error:', error);
         }
