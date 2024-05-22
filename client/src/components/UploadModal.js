@@ -88,131 +88,131 @@ const TextArea = styled.textarea`
 `;
 
 const UploadModal = ({ onClose, onUpload }) => {
-    const [title, setTitle] = useState('');
-    const [userInfo, setUserInfo] = useState(null);
-    const [selectedFile, setSelectedFile] = useState(null);
-    const [description, setDescription] = useState('');
-    const [categories, setCategories] = useState('');
-    const [uploadedImageUrl, setUploadedImageUrl] = useState(null);
+  const [title, setTitle] = useState('');
+  const [userInfo, setUserInfo] = useState(null);
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [description, setDescription] = useState('');
+  const [categories, setCategories] = useState('');
+  const [uploadedImageUrl, setUploadedImageUrl] = useState(null);
 
-    useEffect(() => {
-        const fetchUserInfo = async () => {
-            const token = localStorage.getItem('token');
+  useEffect(() => {
+    const fetchUserInfo = async () => {
+      const token = localStorage.getItem('token');
 
-            if (token) {
-                try {
-                    const response = await axios.post('https://photoshare-me.onrender.com/api/users/info', {
-                        headers: {
-                            'Authorization': `Bearer ${token}`,
-                            'Content-Type': 'application/json'
-                        }
-                    });
-                    setUserInfo(response.data.email);
-                    console.log(response.data.email);
-                } catch (error) {
-                    console.error(error);
-                }
+      if (token) {
+        try {
+          const response = await axios.post('https://photoshare-me.onrender.com/api/users/info', {
+            headers: {
+              'Authorization': `Bearer ${token}`,
+              'Content-Type': 'application/json'
             }
-        };
+          });
+          setUserInfo(response.data.email);
+          console.log(response.data.email);
+        } catch (error) {
+          console.error(error);
+        }
+      }
+    };
 
-        if (!userInfo) fetchUserInfo();
+    if (!userInfo) fetchUserInfo();
+  });
+
+  const handleFileChange = (event) => {
+    setSelectedFile(event.target.files[0]);
+  };
+
+  const handleUpload = async () => {
+
+    if (title.trim() === '' || description.trim() === '' || categories.trim() === '') {
+      alert('Please fill in all fields.');
+      return;
+    }
+
+    const compressedImage = await imageCompression(selectedFile, {
+      maxSizeMB: 0.5,
+      maxWidthOrHeight: 720
     });
 
-    const handleFileChange = (event) => {
-        setSelectedFile(event.target.files[0]);
-    };
+    setSelectedFile(compressedImage);
 
-    const handleUpload = async () => {
+    try {
+      const formData = new FormData();
+      formData.append('photo', selectedFile);
+      formData.append('title', title);
+      formData.append('description', description);
+      formData.append('categories', categories);
+      formData.append('username', userInfo);
 
-        if (title.trim() === '' || description.trim() === '' || categories.trim() === '') {
-            alert('Please fill in all fields.');
-            return;
+      const response = await axios.post('https://photoshare-me.onrender.com/api/files/upload', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
         }
+      });
 
-        const compressedImage = await imageCompression(selectedFile, {
-            maxSizeMB: 0.5,
-            maxWidthOrHeight: 720
-        });
+      const imageUrl = response.data.imageUrl;
+      setUploadedImageUrl(imageUrl);
 
-        setSelectedFile(compressedImage);
+      setTitle('');
+      setDescription('');
+      setCategories('');
+      setSelectedFile(null);
 
-        try {
-            const formData = new FormData();
-            formData.append('photo', selectedFile);
-            formData.append('title', title);
-            formData.append('description', description);
-            formData.append('categories', categories);
-            formData.append('username', userInfo);
-
-            const response = await axios.post('https://photoshare-me.onrender.com/api/files/upload', formData, {
-                headers: {
-                    'Content-Type': 'multipart/form-data'
-                }
-            });
-
-            const imageUrl = response.data.imageUrl;
-            setUploadedImageUrl(imageUrl);
-
-            setTitle('');
-            setDescription('');
-            setCategories('');
-            setSelectedFile(null);
-
-            onClose();
-        } catch (error) {
-            console.error('Error uploading photo:', error);
-        }
-    };
+      onClose();
+    } catch (error) {
+      console.error('Error uploading photo:', error);
+    }
+  };
 
 
-    return (
-        <ModalWrapper>
-            <ModalContent>
-                <CloseButton onClick={onClose}>X</CloseButton>
+  return (
+    <ModalWrapper>
+      <ModalContent>
+        <CloseButton onClick={onClose}>X</CloseButton>
 
-                <div style={{ display: 'flex', marginBottom: '20px' }}>
-                    {uploadedImageUrl ? (
-                        <UploadedImage src={uploadedImageUrl} alt="Uploaded Image" />
-                    ) : (
-                        <p>No image selected</p>
-                    )}
+        <div style={{ display: 'flex', marginBottom: '20px' }}>
+          {uploadedImageUrl ? (
+            <UploadedImage src={uploadedImageUrl} alt="Uploaded Image" />
+          ) : (
+            <p>No image selected</p>
+          )}
 
-                    <div style={{ marginLeft: '20px', flex: '1' }}>
-                        <Input
-                            type="text"
-                            placeholder="Title"
-                            value={title}
-                            onChange={(e) => setTitle(e.target.value)}
-                        />
-                        <TextArea
-                            placeholder="Description"
-                            value={description}
-                            onChange={(e) => setDescription(e.target.value)}
-                        />
-                        <Input
-                            type="text"
-                            placeholder="Categories"
-                            value={categories}
-                            onChange={(e) => setCategories(e.target.value)}
-                        />
-                    </div>
-                </div>
-                <>
-                    <label htmlFor="fileInput">
-                        <NavLink>Add Image</NavLink>
-                    </label>
+          <div style={{ marginLeft: '20px', flex: '1' }}>
+            <Input
+              type="text"
+              placeholder="Title"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+            />
+            <TextArea
+              placeholder="Description"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+            />
+            <Input
+              type="text"
+              placeholder="Categories"
+              value={categories}
+              onChange={(e) => setCategories(e.target.value)}
+            />
+          </div>
+        </div>
+        <>
+          <label htmlFor="fileInput">
+            <NavLink>Add Image</NavLink>
+          </label>
 
-                    <input
-                        type="file"
-                        id="fileInput"
-                        style={{ display: 'none' }}
-                        onChange={handleFileChange}
-                    />
-                    <NavLink onClick={handleUpload}>Upload</NavLink>
-                </>
-            </ModalContent>
-        </ModalWrapper>
-    );
+          <input
+            type="file"
+            id="fileInput"
+            style={{ display: 'none' }}
+            onChange={handleFileChange}
+          />
+          <NavLink onClick={handleUpload}>Upload</NavLink>
+        </>
+      </ModalContent>
+    </ModalWrapper>
+  );
 };
 
 export default UploadModal;

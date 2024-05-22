@@ -110,3 +110,8 @@ exports.login = (req, res) => {
         }
     });
 };
+
+
+exports.active = (req, res) => {
+  res.json({msg: "Server running!"});
+};
