@@ -113,5 +113,6 @@ exports.login = (req, res) => {
 
 
 exports.active = (req, res) => {
+  console.log('Request to make the server active');
   res.json({msg: "Server running!"});
 };
